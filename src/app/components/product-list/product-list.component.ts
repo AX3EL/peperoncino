@@ -19,15 +19,16 @@ export class ProductListComponent {
   addedItems: Record<number, boolean> = {};
 
   get categories(): string[] {
-    const cats = [...new Set(this.store.products.map(p => p.category))];
+    const cats = [...new Set(this.store.products().map(p => p.category))];
     return ['Tutti', ...cats];
   }
 
-  get filteredProducts(): Product[] {
+  get filteredProducts() {
     const cat = this.selectedCategory();
+    const products = this.store.products().filter(p => p.available);
     return cat === 'Tutti'
-      ? this.store.products
-      : this.store.products.filter(p => p.category === cat);
+      ? products
+      : products.filter(p => p.category === cat);
   }
 
   getQuantity(productId: number): number {

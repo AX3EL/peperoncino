@@ -55,6 +55,11 @@ export class OwnerDashboardComponent {
     this.expandedId.set(this.expandedId() === id ? null : id);
   }
 
+  // New: allow owner to toggle product availability
+  toggleProductAvailability(productId: number) {
+    this.store.toggleProductAvailability(productId);
+  }
+
   advanceStatus(booking: Booking) {
     const next = this.nextStatus[booking.status];
     if (next !== booking.status) {
