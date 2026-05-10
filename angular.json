@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "prenotazioni-peperoncino": {
+    "peperoncino": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/prenotazioni-peperoncino",
+            "outputPath": "dist/peperoncino",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -64,10 +64,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "prenotazioni-peperoncino:build:production"
+              "buildTarget": "peperoncino:build:production"
             },
             "development": {
-              "buildTarget": "prenotazioni-peperoncino:build:development"
+              "buildTarget": "peperoncino:build:development"
             }
           },
           "defaultConfiguration": "development"
