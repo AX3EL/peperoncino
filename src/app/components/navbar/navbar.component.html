@@ -1,0 +1,35 @@
+<nav class="navbar">
+  <div class="nav-brand">
+    <span class="brand-icon">🌶️</span>
+    <div class="brand-text">
+      <span class="brand-name">Peperoncino</span>
+      <span class="brand-sub">Bottega & Spesa</span>
+    </div>
+  </div>
+
+  <div class="nav-actions">
+    <div class="view-toggle">
+      <button
+        class="toggle-btn"
+        [class.active]="store.currentView() === 'customer'"
+        (click)="store.setView('customer')">
+        🛒 Cliente
+      </button>
+      <button
+        class="toggle-btn"
+        [class.active]="store.currentView() === 'owner'"
+        (click)="store.setView('owner')">
+        📋 Titolare
+      </button>
+    </div>
+
+    @if (store.currentView() === 'customer') {
+      <button class="cart-btn" (click)="cartOpen.emit()">
+        <span class="cart-icon">🛒</span>
+        @if (store.cartCount() > 0) {
+          <span class="cart-badge">{{ store.cartCount() }}</span>
+        }
+      </button>
+    }
+  </div>
+</nav>

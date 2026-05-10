@@ -1,0 +1,55 @@
+<div class="product-list-container">
+  <div class="list-header">
+    <h2 class="section-title">I Nostri Prodotti</h2>
+    <p class="section-subtitle">Seleziona la quantità e aggiungi al carrello</p>
+  </div>
+
+  <div class="category-filter">
+    @for (cat of categories; track cat) {
+      <button
+        class="cat-btn"
+        [class.active]="selectedCategory() === cat"
+        (click)="selectedCategory.set(cat)">
+        {{ cat }}
+      </button>
+    }
+  </div>
+
+  <div class="products-grid">
+    @for (product of filteredProducts; track product.id) {
+      <div class="product-card" [class.unavailable]="!product.available">
+        <div class="product-emoji">{{ product.emoji }}</div>
+        <div class="product-info">
+          <span class="product-category">{{ product.category }}</span>
+          <h3 class="product-name">{{ product.name }}</h3>
+          <div class="product-price">
+            <span class="price">€{{ product.price.toFixed(2) }}</span>
+            <span class="unit">/ {{ product.unit }}</span>
+          </div>
+        </div>
+
+        @if (product.available) {
+          <div class="product-actions">
+            <div class="quantity-control">
+              <button class="qty-btn" (click)="setQuantity(product.id, getQuantity(product.id) - 1)">−</button>
+              <span class="qty-value">{{ getQuantity(product.id) }}</span>
+              <button class="qty-btn" (click)="setQuantity(product.id, getQuantity(product.id) + 1)">+</button>
+            </div>
+            <button
+              class="add-btn"
+              [class.added]="addedItems[product.id]"
+              (click)="addToCart(product)">
+              @if (addedItems[product.id]) {
+                ✓ Aggiunto!
+              } @else {
+                Aggiungi
+              }
+            </button>
+          </div>
+        } @else {
+          <div class="unavailable-badge">Non disponibile</div>
+        }
+      </div>
+    }
+  </div>
+</div>

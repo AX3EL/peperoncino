@@ -1,0 +1,66 @@
+<div class="booking-form">
+  <div class="form-header">
+    <button class="back-btn" (click)="back.emit()">← Torna al carrello</button>
+    <h3>I tuoi dati</h3>
+    <p>Completa la prenotazione inserendo i tuoi recapiti</p>
+  </div>
+
+  <div class="order-summary">
+    <strong>Riepilogo ordine</strong>
+    @for (item of store.cart(); track item.product.id) {
+      <div class="summary-row">
+        <span>{{ item.product.emoji }} {{ item.product.name }} x{{ item.quantity }}</span>
+        <span>€{{ (item.product.price * item.quantity).toFixed(2) }}</span>
+      </div>
+    }
+    <div class="summary-total">
+      <span>Totale</span>
+      <strong>€{{ store.cartTotal().toFixed(2) }}</strong>
+    </div>
+  </div>
+
+  <div class="form-fields">
+    <div class="field" [class.has-error]="errors['name']">
+      <label>Nome *</label>
+      <input
+        type="text"
+        placeholder="es. Maria"
+        [ngModel]="name()"
+        (ngModelChange)="name.set($event)"
+      />
+      @if (errors['name']) {
+        <span class="error-msg">{{ errors['name'] }}</span>
+      }
+    </div>
+
+    <div class="field" [class.has-error]="errors['surname']">
+      <label>Cognome *</label>
+      <input
+        type="text"
+        placeholder="es. Rossi"
+        [ngModel]="surname()"
+        (ngModelChange)="surname.set($event)"
+      />
+      @if (errors['surname']) {
+        <span class="error-msg">{{ errors['surname'] }}</span>
+      }
+    </div>
+
+    <div class="field" [class.has-error]="errors['phone']">
+      <label>Numero di Telefono *</label>
+      <input
+        type="tel"
+        placeholder="es. 333 123 4567"
+        [ngModel]="phone()"
+        (ngModelChange)="phone.set($event)"
+      />
+      @if (errors['phone']) {
+        <span class="error-msg">{{ errors['phone'] }}</span>
+      }
+    </div>
+  </div>
+
+  <button class="confirm-btn" (click)="submit()" [disabled]="!validate()">
+    ✅ Conferma Prenotazione
+  </button>
+</div>

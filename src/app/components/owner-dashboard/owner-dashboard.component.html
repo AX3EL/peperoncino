@@ -1,0 +1,100 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h2>Dashboard Prenotazioni</h2>
+    <p>Gestisci le prenotazioni del negozio</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-icon">📋</span>
+      <span class="stat-value">{{ stats.total }}</span>
+      <span class="stat-label">Totale</span>
+    </div>
+    <div class="stat-card warn">
+      <span class="stat-icon">⏳</span>
+      <span class="stat-value">{{ stats.pending }}</span>
+      <span class="stat-label">In attesa</span>
+    </div>
+    <div class="stat-card success">
+      <span class="stat-icon">📦</span>
+      <span class="stat-value">{{ stats.ready }}</span>
+      <span class="stat-label">Pronte</span>
+    </div>
+    <div class="stat-card revenue">
+      <span class="stat-icon">💶</span>
+      <span class="stat-value">€{{ stats.todayRevenue.toFixed(0) }}</span>
+      <span class="stat-label">Valore aperto</span>
+    </div>
+  </div>
+
+  <div class="filter-tabs">
+    @for (tab of [
+      {key:'all', label:'Tutte'},
+      {key:'pending', label:'⏳ In attesa'},
+      {key:'confirmed', label:'✅ Confermate'},
+      {key:'ready', label:'📦 Pronte'},
+      {key:'completed', label:'🏁 Ritirate'}
+    ]; track tab.key) {
+      <button
+        class="tab-btn"
+        [class.active]="selectedStatus() === tab.key"
+        (click)="selectedStatus.set(tab.key)">
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+
+  <div class="bookings-list">
+    @if (filteredBookings().length === 0) {
+      <div class="empty-state">
+        <span>📭</span>
+        <p>Nessuna prenotazione trovata</p>
+      </div>
+    }
+
+    @for (booking of filteredBookings(); track booking.id) {
+      <div class="booking-card" [class]="booking.status">
+        <div class="booking-top" (click)="toggleExpand(booking.id)">
+          <div class="booking-left">
+            <span class="status-badge" [class]="booking.status">
+              {{ statusIcon[booking.status] }} {{ statusLabel[booking.status] }}
+            </span>
+            <div class="customer-info">
+              <strong>{{ booking.customerName }} {{ booking.customerSurname }}</strong>
+              <span>📞 {{ booking.customerPhone }}</span>
+            </div>
+          </div>
+          <div class="booking-right">
+            <span class="booking-id">{{ booking.id }}</span>
+            <span class="booking-total">€{{ booking.total.toFixed(2) }}</span>
+            <span class="booking-date">{{ booking.date | date:'HH:mm, dd/MM' }}</span>
+            <span class="expand-icon">{{ expandedId() === booking.id ? '▲' : '▼' }}</span>
+          </div>
+        </div>
+
+        @if (expandedId() === booking.id) {
+          <div class="booking-detail">
+            <div class="items-list">
+              @for (item of booking.items; track item.product.id) {
+                <div class="detail-row">
+                  <span>{{ item.product.emoji }} {{ item.product.name }}</span>
+                  <span>x{{ item.quantity }} {{ item.product.unit }}</span>
+                  <span>€{{ (item.product.price * item.quantity).toFixed(2) }}</span>
+                </div>
+              }
+            </div>
+
+            @if (booking.status !== 'completed') {
+              <button
+                class="action-btn"
+                [class]="booking.status"
+                (click)="advanceStatus(booking)">
+                {{ nextStatusLabel[booking.status] }} →
+              </button>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
