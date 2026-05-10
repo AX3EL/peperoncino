@@ -15,6 +15,14 @@
     }
   </div>
 
+  <div class="search-bar">
+    <input 
+      type="text" 
+      placeholder="🔍 Cerca prodotto..." 
+      [value]="searchTerm()"
+      (input)="searchTerm.set($any($event.target).value)">
+  </div>
+
   <div class="products-grid">
     @for (product of filteredProducts; track product.id) {
       <div class="product-card" [class.unavailable]="!product.available">

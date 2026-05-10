@@ -1,35 +1,50 @@
 <div class="dashboard">
   <div class="dashboard-header">
-    <h2>Dashboard Prenotazioni</h2>
+    <h2>Lista Prenotazioni</h2>
     <p>Gestisci le prenotazioni del negozio</p>
   </div>
 
-  <!-- New: gestione prodotti per il titolare -->
-  <section class="products-section">
-    <h2 class="section-title">📦 Gestione Prodotti</h2>
-    <div class="products-grid">
-      @for (product of store.products(); track product.id) {
-        <div class="product-card" [class.unavailable]="!product.available">
-          <div class="product-header">
-            <span class="product-emoji">{{ product.emoji }}</span>
-            <div class="product-meta">
-              <strong class="product-name">{{ product.name }}</strong>
-              <div class="product-sub">{{ product.category }} · €{{ product.price.toFixed(2) }} / {{ product.unit }}</div>
-            </div>
-          </div>
-
-          <div class="product-actions">
-            <button class="toggle-availability-btn" (click)="toggleProductAvailability(product.id)">
-              @if (product.available) {
-                ❌ Segna come esaurito
-              } @else {
-                ✅ Riattiva
-              }
-            </button>
-          </div>
-        </div>
-      }
+  <!-- New: gestione prodotti per il titolare (Accordion) -->
+  <section class="products-section accordion" [class.expanded]="productsExpanded()">
+    <div class="accordion-header" (click)="productsExpanded.set(!productsExpanded())">
+      <h2 class="section-title">📦 Gestione Prodotti</h2>
+      <span class="expand-arrow">{{ productsExpanded() ? '▲' : '▼' }}</span>
     </div>
+    
+    @if (productsExpanded()) {
+      <div class="accordion-content">
+        <div class="search-bar">
+          <input 
+            type="text" 
+            placeholder="🔍 Cerca prodotto..." 
+            [value]="productSearchTerm()"
+            (input)="productSearchTerm.set($any($event.target).value)">
+        </div>
+        <div class="products-grid">
+          @for (product of filteredProducts(); track product.id) {
+            <div class="product-card" [class.unavailable]="!product.available">
+              <div class="product-header">
+                <span class="product-emoji">{{ product.emoji }}</span>
+                <div class="product-meta">
+                  <strong class="product-name">{{ product.name }}</strong>
+                  <div class="product-sub">{{ product.category }} · €{{ product.price.toFixed(2) }} / {{ product.unit }}</div>
+                </div>
+              </div>
+
+              <div class="product-actions">
+                <button class="toggle-availability-btn" (click)="toggleProductAvailability(product.id)">
+                  @if (product.available) {
+                    ❌ Segna come esaurito
+                  } @else {
+                    ✅ Riattiva
+                  }
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
   </section>
 
   <div class="stats-row">
@@ -96,6 +111,7 @@
             <span class="booking-id">{{ booking.id }}</span>
             <span class="booking-total">€{{ booking.total.toFixed(2) }}</span>
             <span class="booking-date">{{ booking.date | date:'HH:mm, dd/MM' }}</span>
+            <button class="delete-btn" (click)="deleteBooking(booking.id, $event)" title="Elimina prenotazione">🗑️</button>
             <span class="expand-icon">{{ expandedId() === booking.id ? '▲' : '▼' }}</span>
           </div>
         </div>

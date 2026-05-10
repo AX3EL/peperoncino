@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StoreService } from '../../services/store.service';
 import { Product } from '../../models/product.model';
+import { CATEGORIES } from '../../data/products';
 
 @Component({
   selector: 'app-product-list',
@@ -15,20 +16,23 @@ export class ProductListComponent {
   store = inject(StoreService);
 
   selectedCategory = signal<string>('Tutti');
+  searchTerm = signal<string>('');
   quantities: Record<number, number> = {};
   addedItems: Record<number, boolean> = {};
 
-  get categories(): string[] {
-    const cats = [...new Set(this.store.products().map(p => p.category))];
-    return ['Tutti', ...cats];
-  }
+  readonly categories: string[] = ['Tutti', ...CATEGORIES];
 
   get filteredProducts() {
     const cat = this.selectedCategory();
-    const products = this.store.products().filter(p => p.available);
-    return cat === 'Tutti'
-      ? products
-      : products.filter(p => p.category === cat);
+    const term = this.searchTerm().toLowerCase();
+    let products = this.store.products();
+    if (cat !== 'Tutti') {
+      products = products.filter(p => p.category === cat);
+    }
+    if (term) {
+      products = products.filter(p => p.name.toLowerCase().includes(term));
+    }
+    return products;
   }
 
   getQuantity(productId: number): number {

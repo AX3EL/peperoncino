@@ -15,6 +15,15 @@ export class OwnerDashboardComponent {
 
   selectedStatus = signal<string>('all');
   expandedId = signal<string | null>(null);
+  productsExpanded = signal<boolean>(false);
+  productSearchTerm = signal<string>('');
+
+  filteredProducts = computed(() => {
+    const term = this.productSearchTerm().toLowerCase();
+    const products = this.store.products();
+    if (!term) return products;
+    return products.filter(p => p.name.toLowerCase().includes(term));
+  });
 
   filteredBookings = computed(() => {
     const status = this.selectedStatus();
@@ -58,6 +67,13 @@ export class OwnerDashboardComponent {
   // New: allow owner to toggle product availability
   toggleProductAvailability(productId: number) {
     this.store.toggleProductAvailability(productId);
+  }
+
+  deleteBooking(id: string, event: Event) {
+    event.stopPropagation(); // Evita di espandere la card
+    if (confirm('Sei sicuro di voler eliminare questa prenotazione?')) {
+      this.store.deleteBooking(id);
+    }
   }
 
   advanceStatus(booking: Booking) {
